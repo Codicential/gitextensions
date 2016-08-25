@@ -53,7 +53,7 @@ namespace GitUI.RevisionGridClasses
         #endregion
 
         private int _nodeDimension = 8;
-        private int _laneWidth = 13;
+        private int _laneWidth = 16;
         private int _laneLineWidth = 2;
         private const int MaxLanes = 40;
         private Brush _selectionBrush;
@@ -68,17 +68,17 @@ namespace GitUI.RevisionGridClasses
 
         private readonly Color[] _possibleColors =
             {
-                Color.Red,
-                Color.MistyRose,
-                Color.Magenta,
-                Color.Violet,
-                Color.Blue,
-                Color.Azure,
-                Color.Cyan,
-                Color.SpringGreen,
-                Color.Green,
-                Color.Chartreuse,
-                Color.Gold,
+                Color.OrangeRed,
+                Color.RosyBrown,
+                Color.DarkMagenta,
+                Color.BlueViolet,
+                Color.RoyalBlue,
+                Color.Chocolate,
+                Color.DarkCyan,
+                Color.DarkOliveGreen,
+                Color.SeaGreen,
+                Color.CornflowerBlue,
+                Color.DarkGoldenrod,
                 Color.Orange
             };
 
@@ -893,7 +893,7 @@ namespace GitUI.RevisionGridClasses
                 {
                     _graphBitmap = new Bitmap(Math.Max(width, _laneWidth * 3), height, PixelFormat.Format32bppPArgb);
                     _graphWorkArea = Graphics.FromImage(_graphBitmap);
-                    _graphWorkArea.SmoothingMode = SmoothingMode.AntiAlias;
+                    _graphWorkArea.SmoothingMode = SmoothingMode.HighQuality;
                     _cacheHead = 0;
                     _cacheCount = 0;
                 }
