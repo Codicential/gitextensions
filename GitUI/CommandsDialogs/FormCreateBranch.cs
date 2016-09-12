@@ -34,7 +34,7 @@ namespace GitUI.CommandsDialogs
         }
 
 
-        public IEnumerable<T> FindControls<T>(Control control) where T : Control
+        private IEnumerable<T> FindControls<T>(Control control) where T : Control
         {
             var controls = control.Controls.Cast<Control>().ToList();
             return controls.SelectMany(FindControls<T>)
@@ -43,7 +43,8 @@ namespace GitUI.CommandsDialogs
                            .Cast<T>();
         }
 
-        private void BranchNameTextBox_TextChanged(object sender, EventArgs e)
+
+        private void BranchNameTextBox_Leave(object sender, EventArgs e)
         {
             if (!AppSettings.AutoNormaliseBranchName || !BranchNameTextBox.Text.Any(GitBranchNameNormaliser.IsValidChar))
             {
@@ -64,12 +65,16 @@ namespace GitUI.CommandsDialogs
             {
                 label.AutoSize = true;
             }
-            
+
             BranchNameTextBox.Focus();
         }
 
         private void OkClick(object sender, EventArgs e)
         {
+            // Ok button set as the "AcceptButton" for the form
+            // if the user hits [Enter] at any point, we need to trigger BranchNameTextBox Leave event
+            Ok.Focus();
+
             string commitGuid = commitPickerSmallControl1.SelectedCommitHash;
             var branchName = BranchNameTextBox.Text.Trim();
 
@@ -94,7 +99,7 @@ namespace GitUI.CommandsDialogs
                 }
 
                 string cmd;
-                if (chkbxOrphan.Checked)
+                if (Orphan.Checked)
                 {
                     cmd = GitCommandHelpers.CreateOrphanCmd(branchName, commitGuid);
                 }
@@ -104,7 +109,7 @@ namespace GitUI.CommandsDialogs
                 }
 
                 bool wasSuccessFul = FormProcess.ShowDialog(this, cmd);
-                if (chkbxOrphan.Checked && wasSuccessFul && chkbxClearOrphan.Checked)
+                if (Orphan.Checked && wasSuccessFul && ClearOrphan.Checked)
                 {// orphan AND orphan creation success AND clear
                     cmd = GitCommandHelpers.RemoveCmd();
                     FormProcess.ShowDialog(this, cmd);
@@ -115,7 +120,7 @@ namespace GitUI.CommandsDialogs
                     UICommands.UpdateSubmodules(this);
                 }
 
-                DialogResult = wasSuccessFul? DialogResult.OK : DialogResult.None;
+                DialogResult = wasSuccessFul ? DialogResult.OK : DialogResult.None;
             }
             catch (Exception ex)
             {
@@ -125,8 +130,8 @@ namespace GitUI.CommandsDialogs
 
         private void Orphan_CheckedChanged(object sender, EventArgs e)
         {
-            bool isOrphan = chkbxOrphan.Checked;
-            chkbxClearOrphan.Enabled = isOrphan;
+            bool isOrphan = Orphan.Checked;
+            ClearOrphan.Enabled = isOrphan;
 
             chkbxCheckoutAfterCreate.Enabled = (isOrphan == false);// auto-checkout for orphan
             if (isOrphan)

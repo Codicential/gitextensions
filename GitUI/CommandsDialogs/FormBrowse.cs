@@ -186,7 +186,7 @@ namespace GitUI.CommandsDialogs
                 CommitInfoTabControl.TabPages[1].ImageIndex = 1;
                 CommitInfoTabControl.TabPages[2].ImageIndex = 2;
             }
-
+            this.DiffFiles.FilterVisible = true;
             RevisionGrid.UICommandsSource = this;
             Repositories.LoadRepositoryHistoryAsync();
             Task.Factory.StartNew(PluginLoader.Load)
@@ -277,6 +277,11 @@ namespace GitUI.CommandsDialogs
         private GitItemStatus _oldDiffItem;
         private void RefreshRevisions()
         {
+            if (RevisionGrid.IsDisposed || DiffFiles.IsDisposed || IsDisposed || Disposing)
+            {
+                return;
+            }
+
             if (_dashboard == null || !_dashboard.Visible)
             {
                 var revisions = RevisionGrid.GetSelectedRevisions();
